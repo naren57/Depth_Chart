@@ -41,19 +41,21 @@ public class PlayerPositionImpl {
 		return playerDetails;
 	}
 
-	public PlayerDetailsEntity removePlayerFromDepthChart(String playername, String position) {
+	public PlayerDetailsEntity removePlayerFromDepthChart(String playername, String position) throws RecordNotFoundException {
 		LinkedList<PlayerDetailsEntity> details = positionMapList.getOrDefault(position,
 				new LinkedList<PlayerDetailsEntity>());
 		Optional<PlayerDetailsEntity> optlayer = details.stream().filter(player -> player.getPlayerName().equals(playername)).findFirst();
-		PlayerDetailsEntity we=null;
+		PlayerDetailsEntity playerEntity=null;
 		if(optlayer.isPresent()) {
-			we=optlayer.get();
-			details.remove(we);
+			playerEntity=optlayer.get();
+			details.remove(playerEntity);
+		}else {
+			throw new RecordNotFoundException("No player is found for the playername and position");
 		}
-		return we;
+		return playerEntity;
 	}
 
-	public List<PlayerDetailsEntity> getPlayersUnderPlayerInDepthChart(long playerId, String playerPosition) {
+	public List<PlayerDetailsEntity> getPlayersUnderPlayerInDepthChart(long playerId, String playerPosition) throws RecordNotFoundException {
 		
 		LinkedList<PlayerDetailsEntity> details = positionMapList.getOrDefault(playerPosition,
 				new LinkedList<PlayerDetailsEntity>());
@@ -64,7 +66,9 @@ public class PlayerPositionImpl {
 			while(itr.hasNext()) {
 				retplayer.add(itr.next());
 			}
-		}		
+		}	else{
+			throw new RecordNotFoundException("No player is found for the playerID and position");
+		}
 		return retplayer;
 	}
 
